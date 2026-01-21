@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css?family=Orbitron");
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Irish+Grover');
+
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    display: none;
+  }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "African";
+    src: url('/fonts/african/Tribeca.ttf') format('truetype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Milky";
+    src: url('/fonts/milky/milky.ttf') format('truetype');
+    font-weight: 200;
+}
