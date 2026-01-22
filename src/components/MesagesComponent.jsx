@@ -4,8 +4,31 @@ import { TfiReload } from "react-icons/tfi";
 import { AppContext } from "../ContextAPI";
 import { showAddEmailMessageModal } from "../constants";
 
-const MesagesComponent = ({messages}) => {
-  const { currentModal, setCurrentModal } = useContext(AppContext);
+const MesagesComponent = ({ messages }) => {
+  const {
+    currentModal,
+    setCurrentModal,
+    selectedMessages,
+    setSelectedMessages,
+  } = useContext(AppContext);
+
+  const addEmailToSelectedEmails = (e) => {
+ 
+    const messageToAdd = e;
+
+    if (!selectedMessages.includes(messageToAdd)) {
+      setSelectedMessages([...selectedMessages, messageToAdd]);
+    } else {
+      setSelectedMessages(
+        selectedMessages.filter((message) => message !== messageToAdd),
+      );
+    }
+  };
+
+  const isAdded = (message) => {
+    return selectedMessages.some((m) => m.message_id === message.message_id);
+  };
+
   return (
     <div>
       <div className="flex space-x-4 items-center">
@@ -17,21 +40,25 @@ const MesagesComponent = ({messages}) => {
         >
           Add Email Message +
         </button>
-        <TfiReload size={30} className="font-bold cursor-pointer" />
+        {/* <TfiReload size={30} className="font-bold cursor-pointer" /> */}
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {messages && messages.length > 0 ? messages.map((msg, index) => (
-          <MessageCard
-            key={index}
-            message_id={msg.message_id}
-            subject={msg.subject}
-            body={msg.body}
-          />
-        )) : (
+        {messages && messages.length > 0 ? (
+          messages.map((msg, index) => (
+            <div onClick={()=>addEmailToSelectedEmails(msg)} key={index}>
+              <MessageCard
+                key={index}
+                message_id={msg.message_id}
+                subject={msg.subject}
+                body={msg.body}
+                included={isAdded(msg)}
+              />
+            </div>
+          ))
+        ) : (
           <p>No messages available.</p>
         )}
-  
       </div>
     </div>
   );

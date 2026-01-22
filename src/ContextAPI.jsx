@@ -5,10 +5,19 @@ export const AppContext = React.createContext();
 export const AppContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+  // ModalStates and Variables
   const [userModalState, setUserModalState] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [currentModal, setCurrentModal] = useState(null);
 
   const [emailMessages, setEmailMessages] = useState([]);
+
+  const [emailListModel, setEmailListModel] = useState(null);
+  const [selectedEmails, setSelectedEmails] = useState([]);
+
+  const [selectedMessages, setSelectedMessages] = useState([]);
+
+  // Loading States
   const [postMessageLoadingState, setPostMessageLoadingState] = useState(false);
   const [deleteEmailMessageLoadingState, setDeleteEmailMessageLoadingState] =
     useState(false);
@@ -21,21 +30,20 @@ export const AppContextProvider = ({ children }) => {
   const [selectedBulkMailsLoadingState, setSelectedBulkMailsLoadingState] =
     useState(false);
 
-  const [emailList, setemailList] = useState([]);
-
-  const getEmailList = async () => {
+  const getEmailList = async (currentPage = 1) => {
     try {
-      const response = await fetch(`${backendUrl}/get-emails`);
+      const response = await fetch(
+        `${backendUrl}/get-emails?page=${currentPage}`,
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-    
-      setemailList(data?.extracted_records);
+
+      setEmailListModel(data);
 
       return data?.emails;
     } catch (error) {
-  
       return null;
     }
   };
@@ -67,41 +75,47 @@ export const AppContextProvider = ({ children }) => {
 
       const data = await response.json();
       setDeleteEmailMessageLoadingState(false);
-      toast.success("Email message deleted")
+      toast.success("Email message deleted");
       return data;
     } catch (error) {
       setDeleteEmailMessageLoadingState(false);
-      toast.success("Error occurred, try again later")
+      toast.success("Error occurred, try again later");
       return null;
     }
   };
 
   const extractEmailsFromCsv = async (file) => {
     setExtractEmailFromCsvLoadingState(true);
+
     try {
+      const formData = new FormData();
+      formData.append("file", file); // key must match backend
+
       const response = await fetch(`${backendUrl}/extract-emails`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({ csv: csvString }),
+        body: formData, // 👈 FormData, not JSON
       });
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+
       const data = await response.json();
-      setExtractEmailFromCsvLoadingState(false);
+      toast.success("Emails extraction process queued!");
+      setCurrentModal(null);
       return data.emails;
     } catch (error) {
-      
-      setExtractEmailFromCsvLoadingState(false);
+      console.error(error);
+      toast.error("Error occurred try again");
       return [];
+    } finally {
+      setExtractEmailFromCsvLoadingState(false);
     }
   };
 
   const postEmailMessage = async (formdata) => {
     setPostMessageLoadingState(true);
-   
+
     try {
       const response = await fetch(`${backendUrl}/message`, {
         method: "POST",
@@ -125,46 +139,62 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  const sendBulkEmails = async (emails, message) => {
+  const sendBulkEmails = async (subjects, bodies, email_list) => {
     setsendBulkEmailLoadingState(true);
+
+    const body = {
+      subjects: subjects,
+      bodies: bodies,
+      email_list: email_list,
+    };
     try {
       const response = await fetch(`${backendUrl}/emails/bulk`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ emails, message }),
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       setsendBulkEmailLoadingState(false);
       const data = await response.json();
+      toast.success("Batch emailing process queued!!");
       return data;
     } catch (error) {
       setsendBulkEmailLoadingState(false);
+      toast.error("Error occurred!!");
       return null;
     }
   };
 
-  const sendSelectedBulkEmails = async (selectedEmails, message) => {
+  const sendSelectedBulkEmails = async (subjects, bodies, email_list) => {
     setSelectedBulkMailsLoadingState(true);
+
+    const body = {
+      subjects: subjects,
+      bodies: bodies,
+      email_list: email_list,
+    };
     try {
-      const response = await fetch(`${backendUrl}/emails/bulk/selected`, {
+      const response = await fetch(`${backendUrl}/send-selected-emails`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ selectedEmails, message }),
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       setSelectedBulkMailsLoadingState(false);
       const data = await response.json();
+      toast.success("Batch emailing process queued!!");
       return data;
     } catch (error) {
       setSelectedBulkMailsLoadingState(false);
+      toast.error("Error occurred!!");
       return null;
     }
   };
@@ -189,8 +219,14 @@ export const AppContextProvider = ({ children }) => {
           sendSelectedBulkEmails,
           sendBulkEmails,
           setSelectedBulkMailsLoadingState,
-          emailList,
-          getEmailList
+          emailListModel,
+          getEmailList,
+          selectedEmails,
+          setSelectedEmails,
+          selectedMessages,
+          setSelectedMessages,
+          currentPage,
+          setCurrentPage,
         }}
       >
         {children}

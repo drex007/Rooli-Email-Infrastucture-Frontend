@@ -7,13 +7,19 @@ import AddEmailMessageModal from "../components/modals/AddEmailMessageModal";
 import UploadCsvModal from "../components/modals/UploadCsvModal";
 
 const LandingPage = () => {
-  const { currentModal,setCurrentModal, emailList, getEmailList, getEmailMessage, emailMessages,postEmailMessage ,postMessageLoadingState,deleteEmailMessageLoadingState} =
+  const { setCurrentModal,currentModal, emailListModel, getEmailList, getEmailMessage, emailMessages,extractEmailFromCsvLoadingState ,postMessageLoadingState,deleteEmailMessageLoadingState} =
     useContext(AppContext);
 
   useEffect(() => {
     // getEmailList();
     getEmailMessage()
   }, [postMessageLoadingState,deleteEmailMessageLoadingState]);
+
+    useEffect(() => {
+    getEmailList();
+
+  }, [extractEmailFromCsvLoadingState]);
+
 
   return (
     <div>
@@ -38,7 +44,7 @@ const LandingPage = () => {
             Send To All Emails
           </button>
         </div>
-        <EmailTable emails={emailList} />
+        <EmailTable emailListModel={emailListModel} />
       </div>
     </div>
   );
