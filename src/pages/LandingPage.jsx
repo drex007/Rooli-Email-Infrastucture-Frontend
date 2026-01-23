@@ -5,17 +5,19 @@ import { AppContext } from "../ContextAPI";
 import { showAddEmailMessageModal, showUploadCsvModal } from "../constants";
 import AddEmailMessageModal from "../components/modals/AddEmailMessageModal";
 import UploadCsvModal from "../components/modals/UploadCsvModal";
+import CustomButtonLoader from "../components/modals/CustombuttonLoader";
+import toast from "react-hot-toast";
 
 const LandingPage = () => {
-  const { setCurrentModal,currentModal, emailListModel, getEmailList, getEmailMessage, emailMessages,extractEmailFromCsvLoadingState ,postMessageLoadingState,deleteEmailMessageLoadingState} =
+  const { setCurrentModal,selectedMessages, currentModal, sendBulkEmailLoadingState, emailListModel, getEmailList, getEmailMessage, emailMessages, extractEmailFromCsvLoadingState, postMessageLoadingState, deleteEmailMessageLoadingState,sendBulkEmails } =
     useContext(AppContext);
 
   useEffect(() => {
     // getEmailList();
     getEmailMessage()
-  }, [postMessageLoadingState,deleteEmailMessageLoadingState]);
+  }, [postMessageLoadingState, deleteEmailMessageLoadingState]);
 
-    useEffect(() => {
+  useEffect(() => {
     getEmailList();
 
   }, [extractEmailFromCsvLoadingState]);
@@ -37,12 +39,39 @@ const LandingPage = () => {
             Upload Csv
           </button>
         </div>
-        <MesagesComponent messages = {emailMessages} />
+        <MesagesComponent messages={emailMessages} />
         <div className="w-full flex justify-between">
           <p></p>
-          <button className="bg-green-600 text-white h-[50px] p-4 flex text-center my-2 w-1/4 justify-center">
-            Send To All Emails
-          </button>
+          {sendBulkEmailLoadingState ?
+            <button className="bg-green-600 text-white h-[50px] p-4 flex text-center my-2 w-1/4 justify-center"
+
+
+
+            >
+              <CustomButtonLoader />
+            </button> :
+
+            <button className="bg-green-600 text-white h-[50px] p-4 flex text-center my-2 w-1/4 justify-center"
+
+              onClick={async () => {
+                if(selectedMessages.length < 1){
+                  toast.error("Select the email to send")
+                  return;
+                }
+                const subjects = selectedMessages.map(item => item.subject)
+                const bodies = selectedMessages.map(item => item.body)
+                const emails = emailListModel.extracted_records?.map(item => ({ Emails: item.Emails }));
+
+                await sendBulkEmails(subjects, bodies, emails)
+
+
+              }}
+
+            >
+              Send To All Emails
+            </button>
+          }
+
         </div>
         <EmailTable emailListModel={emailListModel} />
       </div>

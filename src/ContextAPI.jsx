@@ -79,7 +79,7 @@ export const AppContextProvider = ({ children }) => {
       return data;
     } catch (error) {
       setDeleteEmailMessageLoadingState(false);
-      toast.success("Error occurred, try again later");
+      toast.error("Error occurred, try again later");
       return null;
     }
   };
@@ -148,7 +148,7 @@ export const AppContextProvider = ({ children }) => {
       email_list: email_list,
     };
     try {
-      const response = await fetch(`${backendUrl}/emails/bulk`, {
+      const response = await fetch(`${backendUrl}/send-bulk-emails`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,6 +160,7 @@ export const AppContextProvider = ({ children }) => {
       }
       setsendBulkEmailLoadingState(false);
       const data = await response.json();
+      setSelectedMessages([])
       toast.success("Batch emailing process queued!!");
       return data;
     } catch (error) {
@@ -190,6 +191,7 @@ export const AppContextProvider = ({ children }) => {
       }
       setSelectedBulkMailsLoadingState(false);
       const data = await response.json();
+      setSelectedMessages([])
       toast.success("Batch emailing process queued!!");
       return data;
     } catch (error) {

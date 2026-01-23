@@ -59,7 +59,7 @@ const EmailTable = ({ emailListModel }) => {
               <th scope="col" class="px-6 py-3 font-medium">
                 Email address
               </th>
-              <th scope="col" class="px-6 py-3 font-medium">
+              <th scope="col" class="px-6 py-3J font-medium">
                 Name
               </th>
               <th scope="col" class="px-6 py-3 font-medium">
@@ -146,8 +146,8 @@ const EmailTable = ({ emailListModel }) => {
           <button type="button" className="bg-purple-600 text-white p-3"
           
           onClick={async()=>{
-            const subjects =  emailMessages.map(item =>item.subject)
-            const bodies = emailMessages.map(item =>item.body)
+            const subjects =  selectedMessages.map(item =>item.subject)
+            const bodies = selectedMessages.map(item =>item.body)
             const emails = selectedEmails?.map(item => ({Emails: item.Emails}));
         
             await sendSelectedBulkEmails(subjects, bodies, emails)
