@@ -17,6 +17,9 @@ export const AppContextProvider = ({ children }) => {
 
   const [selectedMessages, setSelectedMessages] = useState([]);
 
+  const [emailSenders, setEmailSenders] = useState([])
+  const [selectedEmailSenders, setSelectedEmailSenders] = useState([])
+
   // Loading States
   const [postMessageLoadingState, setPostMessageLoadingState] = useState(false);
   const [deleteEmailMessageLoadingState, setDeleteEmailMessageLoadingState] =
@@ -29,6 +32,25 @@ export const AppContextProvider = ({ children }) => {
 
   const [selectedBulkMailsLoadingState, setSelectedBulkMailsLoadingState] =
     useState(false);
+
+
+  const getEmailSenders = async () => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/email-senders`,
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      setEmailSenders(data?.senders);
+
+      return data?.senders;
+    } catch (error) {
+      return null;
+    }
+  };
 
   const getEmailList = async (currentPage = 1) => {
     try {
@@ -139,13 +161,14 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  const sendBulkEmails = async (subjects, bodies, email_list) => {
+  const sendBulkEmails = async (subjects, bodies, email_list, senders) => {
     setsendBulkEmailLoadingState(true);
 
     const body = {
       subjects: subjects,
       bodies: bodies,
       email_list: email_list,
+      senders:senders
     };
     try {
       const response = await fetch(`${backendUrl}/send-bulk-emails`, {
@@ -170,13 +193,14 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  const sendSelectedBulkEmails = async (subjects, bodies, email_list) => {
+  const sendSelectedBulkEmails = async (subjects, bodies, email_list,senders) => {
     setSelectedBulkMailsLoadingState(true);
 
     const body = {
       subjects: subjects,
       bodies: bodies,
       email_list: email_list,
+      senders:senders
     };
     try {
       const response = await fetch(`${backendUrl}/send-selected-emails`, {
@@ -229,6 +253,11 @@ export const AppContextProvider = ({ children }) => {
           setSelectedMessages,
           currentPage,
           setCurrentPage,
+          getEmailSenders,
+          emailSenders, 
+          setEmailSenders,
+          selectedEmailSenders, 
+          setSelectedEmailSenders
         }}
       >
         {children}

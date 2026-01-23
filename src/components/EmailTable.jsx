@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { AppContext } from "../ContextAPI";
+import toast from "react-hot-toast";
 
 const EmailTable = ({ emailListModel }) => {
   const {
@@ -10,38 +11,36 @@ const EmailTable = ({ emailListModel }) => {
     getEmailList,
     currentPage,
     setCurrentPage,
-    sendSelectedBulkEmails
+    sendSelectedBulkEmails,
+    selectedEmailSenders,
   } = useContext(AppContext);
 
-
-
   const toggleSelectedEmail = (item) => {
-  setSelectedEmails((prev) => {
-    const exists = prev.some((m) => m.Emails === item.Emails);
+    setSelectedEmails((prev) => {
+      const exists = prev.some((m) => m.Emails === item.Emails);
 
-    if (exists) {
-      // remove
-      return prev.filter((m) => m.Emails !== item.Emails);
-    }
+      if (exists) {
+        // remove
+        return prev.filter((m) => m.Emails !== item.Emails);
+      }
 
-    // add
-    return [...prev, item];
-  });
-};
+      // add
+      return [...prev, item];
+    });
+  };
 
   const nextPage = async () => {
-    const numb = currentPage + 1
+    const numb = currentPage + 1;
     setCurrentPage(numb);
     await getEmailList(currentPage);
   };
 
   const PrevPage = async () => {
-     const numb = currentPage - 1
+    const numb = currentPage - 1;
     setCurrentPage(numb);
     await getEmailList(numb);
   };
 
-  
   const isAdded = (item) => {
     return selectedEmails.some((m) => m.Emails === item.Emails);
   };
@@ -90,7 +89,7 @@ const EmailTable = ({ emailListModel }) => {
                     type="checkbox"
                     name=""
                     id=""
-                    checked = {isAdded(item)}
+                    checked={isAdded(item)}
                     className="w-[20px] h-[20px] cursor-pointer"
                     onChange={() => toggleSelectedEmail(item)}
                   />
@@ -143,18 +142,29 @@ const EmailTable = ({ emailListModel }) => {
           )}
         </div>
         {selectedEmails.length > 0 && selectedMessages.length > 0 && (
-          <button type="button" className="bg-purple-600 text-white p-3"
-          
-          onClick={async()=>{
-            const subjects =  selectedMessages.map(item =>item.subject)
-            const bodies = selectedMessages.map(item =>item.body)
-            const emails = selectedEmails?.map(item => ({Emails: item.Emails}));
-        
-            await sendSelectedBulkEmails(subjects, bodies, emails)
+          <button
+            type="button"
+            className="bg-purple-600 text-white p-3"
+            onClick={async () => {
+              if (selectedEmailSenders.length < 1) {
+                toast.error("You haven't selected any admin email");
+                return;
+              }
 
+              if (selectedMessages.length < 1) {
+                toast.error("Select the email to send");
+                return;
+              }
 
-          }}
-          
+              const subjects = selectedMessages.map((item) => item.subject);
+              const bodies = selectedMessages.map((item) => item.body);
+              const emails = selectedEmails?.map((item) => ({
+                Emails: item.Emails,
+              }));
+              const senders = selectedEmailSenders;
+
+              await sendSelectedBulkEmails(subjects, bodies, emails, senders);
+            }}
           >
             Send To Selected Emails
           </button>
