@@ -43,7 +43,6 @@ const LandingPage = () => {
   }, [extractEmailFromCsvLoadingState]);
 
   const toggleAdminEmail = (item) => {
-    console.log(selectedEmailSenders);
     setSelectedEmailSenders((prev) => {
       const exists = prev.some((m) => m === item);
 

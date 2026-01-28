@@ -35,7 +35,6 @@ const handleFileSelect = (e) => {
     e.target.value = "";
     return;
   }
-  console.log(file,"FILE")
   setSelectedFile(file); // 👈 store file
 };
 
