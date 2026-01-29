@@ -7,7 +7,7 @@ import AddEmailMessageModal from "../components/modals/AddEmailMessageModal";
 import UploadCsvModal from "../components/modals/UploadCsvModal";
 import CustomButtonLoader from "../components/modals/CustombuttonLoader";
 import toast from "react-hot-toast";
-import roolLogo from "../../public/rool_logo.png";
+import roolLogo from "../assets/rool_logo.png";
 
 const LandingPage = () => {
   const {
