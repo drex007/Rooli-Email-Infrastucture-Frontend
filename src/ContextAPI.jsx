@@ -17,8 +17,8 @@ export const AppContextProvider = ({ children }) => {
 
   const [selectedMessages, setSelectedMessages] = useState([]);
 
-  const [emailSenders, setEmailSenders] = useState([])
-  const [selectedEmailSenders, setSelectedEmailSenders] = useState([])
+  const [emailSenders, setEmailSenders] = useState([]);
+  const [selectedEmailSenders, setSelectedEmailSenders] = useState([]);
 
   // Loading States
   const [postMessageLoadingState, setPostMessageLoadingState] = useState(false);
@@ -33,12 +33,9 @@ export const AppContextProvider = ({ children }) => {
   const [selectedBulkMailsLoadingState, setSelectedBulkMailsLoadingState] =
     useState(false);
 
-
   const getEmailSenders = async () => {
     try {
-      const response = await fetch(
-        `${backendUrl}/email-senders`,
-      );
+      const response = await fetch(`${backendUrl}/email-senders`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -168,7 +165,7 @@ export const AppContextProvider = ({ children }) => {
       subjects: subjects,
       bodies: bodies,
       email_list: email_list,
-      senders:senders
+      senders: senders,
     };
     try {
       const response = await fetch(`${backendUrl}/send-bulk-emails`, {
@@ -183,7 +180,7 @@ export const AppContextProvider = ({ children }) => {
       }
       setsendBulkEmailLoadingState(false);
       const data = await response.json();
-      setSelectedMessages([])
+      setSelectedMessages([]);
       toast.success("Batch emailing process queued!!");
       return data;
     } catch (error) {
@@ -193,14 +190,19 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  const sendSelectedBulkEmails = async (subjects, bodies, email_list,senders) => {
+  const sendSelectedBulkEmails = async (
+    subjects,
+    bodies,
+    email_list,
+    senders,
+  ) => {
     setSelectedBulkMailsLoadingState(true);
 
     const body = {
       subjects: subjects,
       bodies: bodies,
       email_list: email_list,
-      senders:senders
+      senders: senders,
     };
     try {
       const response = await fetch(`${backendUrl}/send-selected-emails`, {
@@ -215,7 +217,7 @@ export const AppContextProvider = ({ children }) => {
       }
       setSelectedBulkMailsLoadingState(false);
       const data = await response.json();
-      setSelectedMessages([])
+      setSelectedMessages([]);
       toast.success("Batch emailing process queued!!");
       return data;
     } catch (error) {
@@ -254,10 +256,10 @@ export const AppContextProvider = ({ children }) => {
           currentPage,
           setCurrentPage,
           getEmailSenders,
-          emailSenders, 
+          emailSenders,
           setEmailSenders,
-          selectedEmailSenders, 
-          setSelectedEmailSenders
+          selectedEmailSenders,
+          setSelectedEmailSenders,
         }}
       >
         {children}

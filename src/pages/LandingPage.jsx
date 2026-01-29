@@ -7,10 +7,12 @@ import AddEmailMessageModal from "../components/modals/AddEmailMessageModal";
 import UploadCsvModal from "../components/modals/UploadCsvModal";
 import CustomButtonLoader from "../components/modals/CustombuttonLoader";
 import toast from "react-hot-toast";
+import roolLogo from "../../public/rool_logo.png";
 
 const LandingPage = () => {
   const {
     emailSenders,
+    selectedEmails,
     setEmailSenders,
     setCurrentModal,
     selectedMessages,
@@ -63,21 +65,13 @@ const LandingPage = () => {
       {currentModal == showAddEmailMessageModal && <AddEmailMessageModal />}
       {currentModal == showUploadCsvModal && <UploadCsvModal />}
       <div className="p-8 font-poppins">
-        <div className="flex justify-between items-center">
-          <p className="py-8 font-semibold"> Rooli Email Infrastructure</p>
-          <button
-            className="bg-orange-500 text-white h-[50px] p-4 flex text-center"
-            onClick={() => {
-              setCurrentModal(showUploadCsvModal);
-            }}
-          >
-            Upload Csv
-          </button>
+        <div className="flex justify-between items-center mb-8">
+          <img src={roolLogo} alt="Rool Logo" className="w-[100px]" />
         </div>
 
-        <p className="my-2 font-semibold">Admin Emails</p>
+        <p className="my-2 font-semibold text-[12px]">Admin Emails</p>
         <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default mb-8">
-          <table class="w-full text-sm text-left rtl:text-right text-body">
+          <table class="w-full text-sm text-left rtl:text-right text-body rounded-">
             <tbody className="flex flex-col">
               {emailSenders?.map((item, index) => (
                 <tr
@@ -100,7 +94,7 @@ const LandingPage = () => {
 
                   <th
                     scope="row"
-                    class="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                    class="px-6 py-4  whitespace-nowrap text-[12px]"
                   >
                     {item?.Emails}
                   </th>
@@ -119,31 +113,39 @@ const LandingPage = () => {
               <CustomButtonLoader />
             </button>
           ) : (
-            <button
-              className="bg-green-600 text-white h-[50px] p-4 flex text-center my-2 w-1/4 justify-center"
-              onClick={async () => {
-                if (selectedMessages.length < 1) {
-                  toast.error("Select the email to send");
-                  return;
-                }
+            <div className="w-full flex justify-end">
+              {selectedEmailSenders.length > 0 &&
+                selectedMessages.length > 0 && selectedEmails.length === emailListModel?.extracted_records.length  && (
+                  <button
+                    className="bg-green-600 text-white h-[50px] p-4 flex text-center my-2 w-1/6 justify-center text-[12px] rounded-md"
+                    onClick={async () => {
+                      if (selectedMessages.length < 1) {
+                        toast.error("Select the email to send");
+                        return;
+                      }
 
-                if (selectedEmailSenders.length < 1) {
-                  toast.error("You haven't selected any admin email");
-                  return;
-                }
-                const subjects = selectedMessages.map((item) => item.subject);
-                const bodies = selectedMessages.map((item) => item.body);
-                const emails = emailListModel.extracted_records?.map(
-                  (item) => ({ Emails: item.Emails }),
-                );
+                      if (selectedEmailSenders.length < 1) {
+                        toast.error("You haven't selected any admin email");
+                        return;
+                      }
+                      const subjects = selectedMessages.map(
+                        (item) => item.subject,
+                      );
+                      const bodies = selectedMessages.map((item) => item.body);
+                      const emails = emailListModel.extracted_records?.map(
+                        (item) => ({ Emails: item.Emails }),
+                      );
 
-                const senders = selectedEmailSenders;
+                      const senders = selectedEmailSenders;
+                      
 
-                await sendBulkEmails(subjects, bodies, emails, senders);
-              }}
-            >
-              Send To All Emails
-            </button>
+                      await sendBulkEmails(subjects, bodies, emails, senders);
+                    }}
+                  >
+                    Send To All Emails
+                  </button>
+                )}
+            </div>
           )}
         </div>
         <EmailTable emailListModel={emailListModel} />

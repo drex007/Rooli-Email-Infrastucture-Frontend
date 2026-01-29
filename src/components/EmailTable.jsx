@@ -45,13 +45,34 @@ const EmailTable = ({ emailListModel }) => {
     return selectedEmails.some((m) => m.Emails === item.Emails);
   };
 
+  const toggleSelectAll = () => {
+  setSelectedEmails((prev) => {
+    // If any emails are selected, clear all (remove all)
+    if (prev.length > 0) {
+      return [];
+    }
+    
+    // If none selected, add all (empty array first, then add all)
+    return [...(emailListModel?.extracted_records || [])];
+  });
+};
+
   return (
     <div className="p-8">
       <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="text-sm text-body bg-neutral-secondary-medium border-b border-default-medium">
             <tr>
-              <th scope="col" class="px-6 py-3 font-medium"></th>
+              <th scope="col" class="px-6 py-3 font-medium">
+                <input
+                  type="checkbox"
+                  name=""
+                  id=""
+                  onChange={toggleSelectAll}
+                  className="w-[20px] h-[20px] cursor-pointer"
+               
+                />
+              </th>
               <th scope="col" class="px-6 py-3 font-medium">
                 Index
               </th>
@@ -141,10 +162,10 @@ const EmailTable = ({ emailListModel }) => {
             </button>
           )}
         </div>
-        {selectedEmails.length > 0 && selectedMessages.length > 0 && (
+        {selectedEmails.length !== emailListModel?.extracted_records.length  && selectedEmails.length > 0 && selectedMessages.length > 0 && (
           <button
             type="button"
-            className="bg-purple-600 text-white p-3"
+            className="bg-purple-600 text-white p-3 text-[12px] rounded-md"
             onClick={async () => {
               if (selectedEmailSenders.length < 1) {
                 toast.error("You haven't selected any admin email");

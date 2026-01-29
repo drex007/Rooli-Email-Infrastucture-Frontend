@@ -27,7 +27,7 @@ const AddEmailMessageModal = () => {
   };
   return (
     <div className="fixed grid h-screen z-20 bg-[#11111190] place-items-center w-full backdrop-blur-sm">
-      <div className="w-1/2 bg-white p-8 ">
+      <div className="w-1/2 bg-white p-8  rounded-lg">
         <div className="flex justify-between w-full my-3">
           <p></p>
           <MdCancel
@@ -43,7 +43,7 @@ const AddEmailMessageModal = () => {
           type="text"
           name="subject"
           id=""
-          className="w-full border p-4 outline-none"
+          className="w-full border p-4 outline-none rounded-md"
           placeholder="Email subject"
           onChange={handleOnChange}
         />
@@ -51,14 +51,14 @@ const AddEmailMessageModal = () => {
         <textarea
           name="body"
           id=""
-          className="w-full border my-4   outline-none p-2"
+          className="w-full border my-4   outline-none p-2 rounded-md"
           placeholder="Email body"
           onChange={handleOnChange}
           rows={10}
         ></textarea>
         {!postMessageLoadingState ? (
           <button
-            className="bg-blue-500 text-white h-[50px] p-4 flex text-center my-2 w-full justify-center"
+            className="bg-blue-500 text-white h-[50px] p-4 flex text-center my-2 w-full justify-center  rounded-md text-[12px]"
             onClick={async () => {
            
               if (
