@@ -13,8 +13,6 @@ const LandingPage = () => {
   const {
     emailSenders,
     selectedEmails,
-    setEmailSenders,
-    setCurrentModal,
     selectedMessages,
     currentModal,
     sendBulkEmailLoadingState,
