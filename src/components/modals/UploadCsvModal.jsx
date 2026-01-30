@@ -48,7 +48,7 @@ const handleUpload = async () => {
 };
   return (
     <div className="fixed grid h-screen z-20 bg-[#11111190] place-items-center w-full backdrop-blur-sm">
-      <div className="w-1/2 bg-white p-8 ">
+      <div className="w-1/2 bg-white p-8 rounded-md">
         <div className="flex justify-between w-full my-3">
           <p></p>
           <MdCancel
@@ -60,19 +60,19 @@ const handleUpload = async () => {
             }}
           />
         </div>
-        <p className="my-2">Upload Email Csv</p>
+        <p className="my-2 text-[14px]">Upload Email Csv</p>
         <input
           type="file"
           name="file"
           id=""
-          className="w-full border p-4 outline-none"
+          className="w-full border p-2 outline-none rounded-md"
           placeholder="Email subject"
          onChange={handleFileSelect}
         />
 
         {!extractEmailFromCsvLoadingState ? (
           <button
-            className="bg-blue-500 text-white h-[50px] p-4 flex text-center my-2 w-full justify-center"
+            className="bg-blue-500 text-white h-[40px] p-3 flex text-center my-2 w-full justify-center rounded-md text-[12px]"
             onClick={handleUpload}
           >
             Upload
