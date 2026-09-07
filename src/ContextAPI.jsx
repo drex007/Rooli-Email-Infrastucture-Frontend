@@ -30,8 +30,7 @@ export const AppContextProvider = ({ children }) => {
   const [sendBulkEmailLoadingState, setsendBulkEmailLoadingState] =
     useState(false);
 
-  const [selectedBulkMailsLoadingState, setSelectedBulkMailsLoadingState] =
-    useState(false);
+  const [, setSelectedBulkMailsLoadingState] = useState(false);
 
   const getEmailSenders = async () => {
     try {
@@ -44,7 +43,7 @@ export const AppContextProvider = ({ children }) => {
       setEmailSenders(data?.senders);
 
       return data?.senders;
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -62,7 +61,7 @@ export const AppContextProvider = ({ children }) => {
       setEmailListModel(data);
 
       return data?.emails;
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -77,7 +76,7 @@ export const AppContextProvider = ({ children }) => {
       setEmailMessages(data?.messages);
 
       return data;
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -96,7 +95,7 @@ export const AppContextProvider = ({ children }) => {
       setDeleteEmailMessageLoadingState(false);
       toast.success("Email message deleted");
       return data;
-    } catch (error) {
+    } catch {
       setDeleteEmailMessageLoadingState(false);
       toast.error("Error occurred, try again later");
       return null;
@@ -151,7 +150,7 @@ export const AppContextProvider = ({ children }) => {
       const data = await response.json();
       toast.success("Email message added successfully!");
       return data;
-    } catch (error) {
+    } catch {
       setPostMessageLoadingState(false);
       toast.error("Failed to add email message.");
       return null;
@@ -183,7 +182,7 @@ export const AppContextProvider = ({ children }) => {
       setSelectedMessages([]);
       toast.success("Batch emailing process queued!!");
       return data;
-    } catch (error) {
+    } catch {
       setsendBulkEmailLoadingState(false);
       toast.error("Error occurred!!");
       return null;
@@ -220,7 +219,7 @@ export const AppContextProvider = ({ children }) => {
       setSelectedMessages([]);
       toast.success("Batch emailing process queued!!");
       return data;
-    } catch (error) {
+    } catch {
       setSelectedBulkMailsLoadingState(false);
       toast.error("Error occurred!!");
       return null;

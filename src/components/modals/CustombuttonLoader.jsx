@@ -1,7 +1,6 @@
-import React from "react";
 import { ThreeDots } from "react-loader-spinner";
 
-const CustomButtonLoader = ({buttonColor}) => {
+const CustomButtonLoader = () => {
   return (
     <ThreeDots
       height="20"

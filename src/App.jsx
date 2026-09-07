@@ -1,11 +1,8 @@
-import { useContext, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from './pages/LandingPage';
 function App() {
 
   return (
-    //Added comments
-
     <BrowserRouter>
 
       <Routes>
@@ -16,15 +13,6 @@ function App() {
 
 
         } />
-{/* 
-        <Route path='/admin' element={
-
-          <AdminPage />
-
-        } />
-
-     */}
-
       </Routes>
     </BrowserRouter>
 
@@ -35,5 +23,4 @@ function App() {
 }
 
 export default App
-
 
